@@ -50,7 +50,7 @@ install:
 
 script:
   - set -e
-  - conda install --yes sphinx sphinx_rtd_theme recommonmark
+  - conda install --yes sphinx sphinx_rtd_theme recommonmark -c conda-forge
   - pip install git+git://github.com/drdoctr/doctr.git
   - make html
   - doctr deploy --deploy-repo xpdAcq/xpdAcq.github.io --built-docs ./_build/html;
