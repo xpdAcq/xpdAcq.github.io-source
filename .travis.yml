@@ -54,4 +54,4 @@ script:
   - pip install git+git://github.com/drdoctr/doctr.git
   - pip install recommonmark
   - make html
-  - doctr deploy --deploy-repo xpdAcq/xpdAcq.github.io --built-docs ./_build/html;
+  - doctr deploy . --deploy-repo xpdAcq/xpdAcq.github.io --built-docs ./_build/html;
