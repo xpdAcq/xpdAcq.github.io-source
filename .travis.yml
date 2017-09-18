@@ -2,7 +2,7 @@ language: python
 sudo: false
 env:
   global:
-    - secure: ""
+    - secure: "OMdYGmwEqre76wGdkmbTWx+qDJ8243+LAe+FQqGG6Uvn2WsydooYc/O4Enh7kl3vIjok65bW0sVzSaDxiIKHmj4USInmNd/vbKmSM8O/3yuOzRAU0Jcl5Io5v0qF2VyQJl0paGFXek8O0BP2Atn6MPzhDJumqhruvHWvo6xWnTRSSQ1+WQL3t6TxByIQUvV9oZJ1QiCb+3Zku12Qhj4weUjHoWGbtCLC+JUJmWOtJOlm+HdxYd1meP/DdnsK+oFOb2XmvnPn370bgjlU1PAOTzDXpF+gt8Atd9Yt/XxPEX+HB5aUpOnOptB5H5p5rGQJurzxwt7vHa4fU0OiuAXrR2Vek+OMoWxgKQVzJVjr0TLkidAvrDXTNrbH752uJ05jpaXhSGEbat1iy6yXCYW8iVhHL70wi+kCvt4vMk7R7boISk8M0lqlBBE42lv/hkO4KhJ2qlM/eRybXmqk96x+DHGSq/fowvQsVTQZoMwiEmtW25QswjzX3OvkDzJqwuIBdjEfxbLfjJ2CEVwPfM7vnF25oCnJ+pR7tM8+3qP2zZk6FJOEsAnygBB+nuigkx8dZ07v5J++0Ewr+AO7LFZNDQiiRTJZgXwviEJk1T/i5KckGiqUtpVq53UKUrTfftLTNle6JEoaZLkJ1TqUgIdjwAGXNMDcEAyoacs9kOcytvI="
   matrix:
     - CUTTING_EDGE=true
 
@@ -55,4 +55,4 @@ script:
   - cd docs
   - make html
   - cd ..
-  - doctr deploy . --built-docs ./docs/_build/html;
+  - doctr deploy --deploy-repo xpdAcq/xpdAcq.github.io --built-docs ./_build/html;
