@@ -1,0 +1,57 @@
+language: python
+sudo: false
+env:
+  global:
+    - secure: "OMdYGmwEqre76wGdkmbTWx+qDJ8243+LAe+FQqGG6Uvn2WsydooYc/O4Enh7kl3vIjok65bW0sVzSaDxiIKHmj4USInmNd/vbKmSM8O/3yuOzRAU0Jcl5Io5v0qF2VyQJl0paGFXek8O0BP2Atn6MPzhDJumqhruvHWvo6xWnTRSSQ1+WQL3t6TxByIQUvV9oZJ1QiCb+3Zku12Qhj4weUjHoWGbtCLC+JUJmWOtJOlm+HdxYd1meP/DdnsK+oFOb2XmvnPn370bgjlU1PAOTzDXpF+gt8Atd9Yt/XxPEX+HB5aUpOnOptB5H5p5rGQJurzxwt7vHa4fU0OiuAXrR2Vek+OMoWxgKQVzJVjr0TLkidAvrDXTNrbH752uJ05jpaXhSGEbat1iy6yXCYW8iVhHL70wi+kCvt4vMk7R7boISk8M0lqlBBE42lv/hkO4KhJ2qlM/eRybXmqk96x+DHGSq/fowvQsVTQZoMwiEmtW25QswjzX3OvkDzJqwuIBdjEfxbLfjJ2CEVwPfM7vnF25oCnJ+pR7tM8+3qP2zZk6FJOEsAnygBB+nuigkx8dZ07v5J++0Ewr+AO7LFZNDQiiRTJZgXwviEJk1T/i5KckGiqUtpVq53UKUrTfftLTNle6JEoaZLkJ1TqUgIdjwAGXNMDcEAyoacs9kOcytvI="
+  matrix:
+    - CUTTING_EDGE=true
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.cache/matplotlib
+
+services:
+  - mongodb
+addons:
+  apt:
+    sources:
+    - mongodb-3.2-precise
+    packages:
+    - mongodb-org-server
+
+python:
+  - 3.5
+before_install:
+  - git clone https://github.com/NSLS-II/nsls2-ci --branch master --single-branch ~/ci_scripts
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - "export DISPLAY=:99.0"
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b -p ~/mc
+  - export PATH=~/mc/bin:$PATH
+  - conda update conda --yes
+  - export CONDARC=ci/condarc
+  - export MDS_HOST=localhost
+  - export MDS_DATABASE=test
+  - export MDS_TIMEZONE=US/Eastern
+  - mkdir -p /home/travis/.config/metadatastore
+  - 'echo ''port: 27017'' > /home/travis/.config/metadatastore/connection.yml'
+  - export FS_HOST=localhost
+  - export FS_DATABASE=test
+  - mkdir -p /home/travis/.config/filestore
+  - 'echo ''port: 27017'' > /home/travis/.config/filestore/connection.yml'
+
+
+install:
+  - export GIT_FULL_HASH=`git rev-parse HEAD`
+  - conda create --yes -n testenv python=$TRAVIS_PYTHON_VERSION -c conda-forge
+  - source activate testenv
+
+script:
+  - set -e
+  - conda install --yes sphinx sphinx_rtd_theme -c conda-forge
+  - pip install git+git://github.com/drdoctr/doctr.git
+  - pip install recommonmark
+  - make html
+  - doctr deploy . --deploy-repo xpdAcq/xpdAcq.github.io --built-docs ./_build/html;
